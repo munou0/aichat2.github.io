@@ -1,79 +1,204 @@
-<!DOCTYPE html>
+<!-- ugly-contact-form.html
+     - 意図的にダサく・古臭く・アクセシビリティ無視で作ってあります
+     - 保存してブラウザで開いてください (例: ugly-contact-form.html)
+-->
+<!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>無能専用 お問い合わせ</title>
+  <meta charset="utf-8">
+  <title>お問い合わせ（ごちゃごちゃ版）</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
+    /* 無秩序なスタイルを詰め込み */
     body {
-      font-family: Arial, sans-serif;
-      background-color: #e6e6e6;
-      color: #333;
-      padding: 40px;
+      background: repeating-linear-gradient(45deg, #ffeb3b 0 10px, #ff5722 10px 20px);
+      font-family: "Comic Sans MS", "Arial", sans-serif;
+      margin: 0;
+      padding: 0;
     }
-    h1 {
+    header {
+      background: url('') /* empty on purpose */ repeat;
+      padding: 18px;
       text-align: center;
-      color: #444;
+      border-bottom: 6px dashed #000;
     }
-    form {
-      max-width: 500px;
-      margin: 0 auto;
-      background-color: #fff;
-      padding: 30px;
-      border-radius: 8px;
+    header h1 {
+      margin: 0;
+      font-size: 48px;
+      color: #0a0;
+      text-shadow: 3px 3px 0 #f00;
     }
-    label {
-      display: block;
-      margin-top: 15px;
+
+    /* テーブルレイアウト：古典的にダメ */
+    .form-table {
+      width: 90%;
+      max-width: 980px;
+      margin: 24px auto;
+      border: 8px double #000;
+      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(200,200,200,0.85));
+      padding: 12px;
     }
-    input, textarea {
-      width: 100%;
+    td {
+      padding: 12px;
+      vertical-align: top;
+    }
+    input[type=text], input[type=email], textarea, select {
+      border: 4px inset #333;
       padding: 10px;
-      margin-top: 5px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    }
-    button {
-      margin-top: 20px;
       width: 100%;
-      padding: 10px;
-      background-color: #444;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 16px;
+      background: #fff7e6;
+    }
+    /* 無意味にでかいボタン */
+    .send-btn {
+      display: inline-block;
+      padding: 18px 36px;
+      font-size: 20px;
+      border-radius: 6px;
+      border: 3px solid #222;
+      background: linear-gradient(#00e676, #00bfa5);
       cursor: pointer;
+      box-shadow: 6px 6px 0 rgba(0,0,0,0.5);
     }
-    button:hover {
-      background-color: #666;
+
+    /* 目に痛い通知 */
+    .notice {
+      font-weight: bold;
+      color: #b71c1c;
+      background: #fff8f0;
+      padding: 8px;
+      border: 3px dashed #b71c1c;
+      margin-bottom: 12px;
     }
-    .note {
-      margin-top: 20px;
-      font-size: 0.9em;
-      color: #777;
-      text-align: center;
+
+    /* アニメ：邪魔 */
+    @keyframes blinkish {
+      0% { opacity: 1; transform: rotate(-2deg); }
+      50% { opacity: 0.4; transform: rotate(2deg); }
+      100% { opacity: 1; transform: rotate(-2deg); }
     }
+    .fancy {
+      display:inline-block;
+      animation: blinkish 2s infinite;
+    }
+
+    /* 小さなアクセシビリティ無視 */
+    .sr-only { position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden; }
   </style>
 </head>
 <body>
+  <header>
+    <marquee behavior="alternate" scrollamount="10">
+      <h1 class="fancy"><font color="#ff007f">お問い合わせはこちら</font></h1>
+    </marquee>
+  </header>
 
-  <h1>無能専用 お問い合わせフォーム</h1>
+  <main>
+    <div class="form-table">
+      <div class="notice">※重要: このフォームは見た目を優先しています。実用性は保証しません。</div>
 
-  <form>
-    <label for="name">名前（どうせ偽名）</label>
-    <input type="text" id="name" name="name" placeholder="無能 太郎">
+      <form id="uglyForm" action="#" method="post" onsubmit="return submitUgly(event)">
+        <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+          <tr>
+            <td width="30%"><label for="name">お名前</label></td>
+            <td>
+              <!-- ラベルはあるがidだけ。placeholderは意味深 -->
+              <input id="name" name="name" type="text" placeholder="名前？（適当でいいよ）">
+            </td>
+          </tr>
 
-    <label for="email">メールアドレス（返事は来ない）</label>
-    <input type="email" id="email" name="email" placeholder="munou@example.com">
+          <tr>
+            <td><label for="email">メール</label></td>
+            <td><input id="email" name="email" type="email" placeholder="you@example.com"></td>
+          </tr>
 
-    <label for="message">お問い合わせ内容（愚痴推奨）</label>
-    <textarea id="message" name="message" rows="6" placeholder="自分が無能な理由を書いてください"></textarea>
+          <tr>
+            <td><label for="topic">ジャンル</label></td>
+            <td>
+              <select id="topic" name="topic">
+                <option>選べ（適当）</option>
+                <option>質問</option>
+                <option>クレーム</option>
+                <option>その他</option>
+              </select>
+            </td>
+          </tr>
 
-    <button type="submit">送信したつもりになる</button>
-  </form>
+          <tr>
+            <td><label for="message">内容</label></td>
+            <td>
+              <textarea id="message" name="message" rows="6" placeholder="ここに長文でぶちまけろ"></textarea>
+            </td>
+          </tr>
 
-  <div class="note">
-    ※このフォームは何も解決しません。<br>
-    無能は送信しても無能のままです。
-  </div>
+          <tr>
+            <td>添付</td>
+            <td>
+              <!-- ファイル入力は無効化して見せかけだけ -->
+              <input type="file" disabled> <small>（無効）</small>
+            </td>
+          </tr>
 
+          <tr>
+            <td>確認</td>
+            <td>
+              <label><input type="checkbox" name="agree"> 規約とか同意する（たぶん）</label>
+            </td>
+          </tr>
+
+          <tr>
+            <td></td>
+            <td>
+              <button type="submit" class="send-btn">送信する（できるとは言ってない）</button>
+              <button type="reset" style="margin-left:12px;padding:12px;border:2px solid #000;background:#ffd54f;">リセット</button>
+            </td>
+          </tr>
+        </table>
+      </form>
+
+      <p style="margin-top:14px;font-size:12px;color:#444;">
+        <font color="#7b1fa2">注:</font> このフォームは学習用のためバリデーションやサーバ送信は意図的に杜撰です。JSが無効だとさらにカオスになります。
+      </p>
+    </div>
+  </main>
+
+  <script>
+    // 適当なクライアントサイド処理で「送信」するふりをする
+    function submitUgly(e) {
+      e.preventDefault();
+      // いいかげんな検証
+      var name = document.getElementById('name').value.trim();
+      var email = document.getElementById('email').value.trim();
+      var msg = document.getElementById('message').value.trim();
+
+      // ちゃんとした正規表現は使わない、裸のcontainsで判断
+      if (!name || !email.includes('@') || msg.length < 5) {
+        alert('入力に問題があります。まあ気にするな。');
+        // 送信しない（デモ用なので）
+        return false;
+      }
+
+      // 見せかけの送信エフェクト
+      document.querySelector('.send-btn').textContent = '送信中…';
+      setTimeout(function(){
+        // ダサいモーダル代わり
+        var overlay = document.createElement('div');
+        overlay.style.position = 'fixed';
+        overlay.style.left = 0;
+        overlay.style.top = 0;
+        overlay.style.right = 0;
+        overlay.style.bottom = 0;
+        overlay.style.background = 'rgba(0,0,0,0.7)';
+        overlay.style.display = 'flex';
+        overlay.style.alignItems = 'center';
+        overlay.style.justifyContent = 'center';
+        overlay.style.zIndex = 9999;
+        overlay.innerHTML = '<div style="background:#fff;padding:20px;border:6px solid #000;text-align:center;font-size:18px;">送信完了！でも実際にはどこにも送ってません</div>';
+        document.body.appendChild(overlay);
+      }, 600);
+      return false;
+    }
+  </script>
 </body>
 </html>
