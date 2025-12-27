@@ -30,7 +30,7 @@
 ## ⚙ セットアップ
 
 ```bash
-git clone https://github.com/yourname/cyber-haven.git
+git clone https://github.com/cybertech2/cyber-haven.git
 cd cyber-haven
 open index.html
 以上。 ビルド不要。人生はすでに十分コンパイルされている。
