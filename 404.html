@@ -1,147 +1,363 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>404 Not Found — お探しのページは消えました</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>404 — ページが見つかりません | CYBER HAVEN</title>
 
-  <!-- SEO / クローラー向け -->
-  <meta name="description" content="最強にダサい404ページ。ページが見つかりませんでした。トップへ戻るか検索してください。">
-  <meta name="keywords" content="404, Not Found, エラー, ページが見つかりません">
-  <link rel="canonical" href="https://dev-qianyu.github.io/404.html">
-  <meta name="robots" content="noindex,follow">
-  <meta name="googlebot" content="noindex,follow">
+  <!-- Google Font (任意) -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;600&display=swap" rel="stylesheet">
 
-
-  <!-- ここからは見た目を徹底的にダサくするCSS -->
   <style>
-    /* わざと混ぜるフォント・色・アニメで最高にダサく */
-    html,body{height:100%;margin:0;padding:0;font-family:"Comic Sans MS", "ＭＳ ゴシック", monospace;}
+    :root{
+      --bg:#03020a;
+      --neon-cyan:#00e6ff;
+      --neon-pink:#ff2d95;
+      --muted:#bfcbd6;
+      --glass: rgba(255,255,255,0.03);
+    }
+
+    /* Reset */
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
     body{
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", sans-serif;
       background:
-        repeating-linear-gradient(45deg, #ff00ff 0 10px, #00ffff 10px 20px),
-        radial-gradient(circle at 20% 20%, rgba(255,255,0,0.2), transparent 20%),
-        linear-gradient(180deg,#fff 0%,#eee 100%);
-      color:#111;
-      text-align:center;
+        radial-gradient(800px 400px at 10% 10%, rgba(0,230,255,0.04), transparent 6%),
+        radial-gradient(700px 300px at 90% 90%, rgba(255,45,149,0.03), transparent 8%),
+        var(--bg);
+      color:var(--muted);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
       display:flex;
       align-items:center;
       justify-content:center;
+      padding:32px;
     }
-    table.layout{border:6px dotted lime;background:rgba(255,255,255,0.9);padding:20px;}
-    h1{
-      font-size:84px;
+
+    /* ambient grid + scanlines */
+    .ambient{
+      position:fixed;
+      inset:0;
+      z-index:0;
+      pointer-events:none;
+      background-image:
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px);
+      background-size: 180px 180px, 100% 3px;
+      mix-blend-mode:overlay;
+      opacity:0.85;
+      animation: drift 18s linear infinite;
+    }
+    @keyframes drift{
+      from{ transform:translateX(0) }
+      to{ transform:translateX(-160px) }
+    }
+
+    /* container */
+    .wrap{
+      position:relative;
+      z-index:2;
+      width:min(1100px,96vw);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.06);
+      border-radius:14px;
+      padding:28px;
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap:20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px) saturate(120%);
+      overflow:hidden;
+      min-height:420px;
+    }
+
+    /* left panel */
+    .left{
+      padding:18px 8px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:18px;
+    }
+
+    .num{
+      font-family: "Orbitron", sans-serif;
+      font-weight:700;
+      font-size:clamp(64px, 10vw, 112px);
+      color:#eaffff;
+      line-height:0.9;
+      position:relative;
       letter-spacing:6px;
-      margin:0 0 10px 0;
-      text-shadow: 3px 3px 0 #ff0000, -3px -3px 0 #00ff00;
-      transform: rotate(-3deg);
-      animation: wobble 1.2s infinite;
+      text-shadow:
+        0 0 20px rgba(0,230,255,0.15),
+        0 0 40px rgba(255,45,149,0.06);
     }
-    @keyframes wobble{
-      0%{transform:rotate(-3deg) scale(1);}
-      50%{transform:rotate(3deg) scale(1.05);}
-      100%{transform:rotate(-3deg) scale(1);}
+
+    /* glitch for number */
+    .num.glitch::before,
+    .num.glitch::after{
+      content: attr(data-text);
+      position:absolute;
+      left:0; top:0;
+      width:100%; height:100%;
+      pointer-events:none;
+      mix-blend-mode:screen;
     }
-    .big-number{
-      font-size:220px;
-      color:#0000ff;
-      -webkit-text-stroke: 4px yellow;
-      margin:0;
-      filter: drop-shadow(10px 10px 0 rgba(0,0,0,0.2));
+    .num.glitch::before{
+      color:var(--neon-cyan);
+      transform:translate(6px,-6px);
+      opacity:0.8;
+      filter:blur(0.5px);
+      animation: g1 2.8s infinite linear;
     }
-    .blink{
-      animation: blink 0.8s steps(2,start) infinite;
-      font-weight:bold;
+    .num.glitch::after{
+      color:var(--neon-pink);
+      transform:translate(-6px,6px);
+      opacity:0.7;
+      filter:blur(0.6px);
+      animation: g2 3.4s infinite linear;
     }
-    @keyframes blink{50%{opacity:0.1}}
-    .marq{margin:10px 0; font-size:20px;}
-    /* レイアウトをtableで行う（懐かしさ） */
-    td {padding:12px;}
-    .ugly-link{
-      display:inline-block;padding:12px 20px;border:4px double #ff8800;background:linear-gradient(#fff,#ffcccc);
-      text-decoration:none;font-weight:bold;border-radius:2px;
-      box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+    @keyframes g1{
+      0%{ clip-path: inset(0 0 80% 0) }
+      15%{ clip-path: inset(10% 0 55% 0) }
+      30%{ clip-path: inset(40% 0 30% 0) }
+      45%{ clip-path: inset(5% 0 75% 0) }
+      60%{ clip-path: inset(70% 0 0 0) }
+      100%{ clip-path: inset(0 0 80% 0) }
     }
-    /* 無意味な回転GIF代わりのCSS */
-    .spinner{
-      width:64px;height:64px;margin:10px auto;border-radius:50%;
-      background:conic-gradient(#ff0,#f0f,#0ff,#0f0,#ff0);
-      animation: spin 1s linear infinite;
-      box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+    @keyframes g2{
+      0%{ clip-path: inset(80% 0 0 0) }
+      18%{ clip-path: inset(60% 0 10% 0) }
+      36%{ clip-path: inset(30% 0 40% 0) }
+      54%{ clip-path: inset(5% 0 80% 0) }
+      100%{ clip-path: inset(80% 0 0 0) }
     }
-    @keyframes spin{to{transform:rotate(360deg)}}
-    footer{font-size:12px;color:#666;margin-top:8px;}
-    /* さらにダサいフォント色の混在 */
-    .muted{color:#777}
+
+    .title{
+      font-size:clamp(18px,2.2vw,22px);
+      font-weight:600;
+      color:#e6f7ff;
+      letter-spacing:0.6px;
+    }
+
+    .desc{
+      color: #cfefff;
+      opacity:0.92;
+      max-width:68ch;
+      line-height:1.7;
+      font-size:15px;
+    }
+
+    .actions{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      margin-top:6px;
+    }
+    .btn{
+      padding:10px 14px;
+      border-radius:10px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.06);
+      color:var(--muted);
+      font-weight:600;
+      cursor:pointer;
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .btn:focus{ outline:3px solid rgba(0,230,255,0.12); outline-offset:3px }
+    .btn.primary{
+      background: linear-gradient(90deg,var(--neon-cyan),var(--neon-pink));
+      color:#060606;
+      -webkit-background-clip:text;
+      background-clip:text;
+      -webkit-text-fill-color:transparent;
+      position:relative;
+    }
+    .btn.ghost{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.06);
+    }
+
+    /* right panel */
+    .right{
+      padding:18px;
+      border-left:1px solid rgba(255,255,255,0.03);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      justify-content:center;
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.25));
+      border-radius:10px;
+      padding:12px;
+      font-family: "Courier New", monospace;
+      font-size:13px;
+      color:#9ff7ff;
+      line-height:1.6;
+      border:1px solid rgba(0,230,255,0.06);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+    }
+
+    .search{
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    .search input[type="search"]{
+      flex:1;
+      padding:10px 12px;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,0.06);
+      background:rgba(255,255,255,0.02);
+      color:var(--muted);
+      font-size:14px;
+    }
+    .search input:focus{ outline: 3px solid rgba(0,230,255,0.08); outline-offset:2px }
+
+    .hint{
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    /* small footer */
+    .meta{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      color:rgba(191,203,214,0.7);
+      font-size:13px;
+    }
+
+    /* mobile */
+    @media (max-width:880px){
+      .wrap{ grid-template-columns: 1fr; padding:18px }
+      .right{ border-left: none; border-top:1px solid rgba(255,255,255,0.03); }
+      .num{ font-size: clamp(48px, 12vw, 84px) }
+    }
   </style>
 </head>
 <body>
-  <!-- 古いcenterとfontタグも入れておく（レガシー感） -->
-  <center>
-    <table class="layout" cellpadding="0" cellspacing="0" role="presentation" aria-labelledby="errTitle">
-      <tr>
-        <td>
-          <font face="Comic Sans MS, sans-serif">
-            <div id="errTitle">
-              <div class="big-number">404</div>
-              <h1 class="blink">お探しのページは消えました</h1>
-            </div>
+  <div class="ambient" aria-hidden="true"></div>
 
-            <!-- レトロでダサいMarquee -->
-            <div class="marq"><marquee behavior="alternate" scrollamount="12">このページはどっかへ行ったようです。探すのは諦めましょう。</marquee></div>
+  <main class="wrap" role="main" aria-labelledby="page-title">
+    <section class="left">
+      <div class="num glitch" id="code" data-text="404">404</div>
 
-            <!-- テーブルでボタンを並べる -->
-            <table role="presentation" style="margin:8px auto;">
-              <tr>
-                <td><a class="ugly-link" href="/" title="トップページへ戻る">トップに逃げる</a></td>
-                <td><a class="ugly-link" href="/sitemap.xml" title="サイトマップ">サイトマップを見る</a></td>
-                <td><a class="ugly-link" href="/contact" title="お問い合わせ">運営に八つ当たり</a></td>
-              </tr>
-            </table>
+      <h1 id="page-title" class="title">ページが見つかりません — ネットの迷子です</h1>
 
-            <div class="spinner" aria-hidden="true"></div>
+      <p class="desc">
+        そのURLは存在しないか、消えたようです。  
+        ここは情報の残骸が漂うネットの片隅。気をつけないと謎のサブプロセスに絡まれます。  
+        下から移動するか、検索してみてください。
+      </p>
 
-            <p class="muted">ヒント: アドレスを確認するか、上のボタンを押して。どうしても見つからないなら、ブラウザの履歴を掘ると良いかも。</p>
+      <div class="actions" role="group" aria-label="404 アクション">
+        <button class="btn primary" id="homeBtn">ホームに戻る</button>
+        <button class="btn ghost" id="reportBtn">壊れてる？報告する</button>
+      </div>
+    </section>
 
-            <hr style="border:none;border-top:3px dashed #f00;width:80%;margin:18px auto;">
+    <aside class="right" aria-label="ナビゲーションと検索">
+      <div class="card" role="search" aria-label="サイト検索">
+        <form id="searchForm" class="search" action="" onsubmit="return handleSearch(event);" aria-describedby="searchHint">
+          <input id="q" name="q" type="search" placeholder="サイト内を検索（例: ポートフォリオ）" aria-label="検索クエリ" />
+          <button class="btn" type="submit" aria-label="検索ボタン">検索</button>
+        </form>
+        <div id="searchHint" class="hint" style="margin-top:8px">
+          外部検索を使う場合、結果は新しいタブで開きます。
+        </div>
+      </div>
 
-            <!-- ダサい小さい検索フォーム（動くけどダサい） -->
-            <form action="/search" method="get" style="margin:6px auto;">
-              <input name="q" placeholder="検索ワード入れてみろ" style="padding:8px 10px;border:3px inset #ccc;width:220px;">
-              <input type="submit" value="検索する" style="padding:8px 12px;border:3px outset #888;">
-            </form>
+      <div class="card" role="status" aria-live="polite" id="info">
+        <div><strong>提案:</strong></div>
+        <ul style="margin-top:8px;line-height:1.6">
+          <li>URLのタイプミスを確認してください</li>
+          <li>サイトマップやトップページを確認してください</li>
+          <li>問題が続くときは「壊れてる？報告する」を押してください</li>
+        </ul>
+      </div>
 
-            <footer>
-              <small>© 2025 Example.com — それでも見つからない場合は 404 の呪いがかかっています。</small>
-            </footer>
-          </font>
-        </td>
-      </tr>
-    </table>
-  </center>
+      <div class="meta" aria-hidden="false">
+        <div>site: CYBER HAVEN</div>
+        <div id="timeStamp"></div>
+      </div>
+    </aside>
+  </main>
 
-  <!-- さらに悪趣味なJS（動くけど意味なし） -->
   <script>
-    // 404ページでもクローラー用に内部リンクはきちんと出す（JSで動的に追加）
-    (function(){
-      var links = [
-        {href:'/', text:'トップ'},
-        {href:'/about', text:'会社について'},
-        {href:'/products', text:'製品一覧'},
-        {href:'/contact', text:'お問い合わせ'}
-      ];
-      var wrapper = document.createElement('div');
-      wrapper.style.marginTop = '12px';
-      links.forEach(function(l){
-        var a = document.createElement('a');
-        a.href = l.href;
-        a.textContent = l.text;
-        a.style.margin = '0 8px';
-        a.style.fontSize = '13px';
-        wrapper.appendChild(a);
-      });
-      document.body.appendChild(wrapper);
+    // 基本の挙動
+    const homeBtn = document.getElementById('homeBtn');
+    const reportBtn = document.getElementById('reportBtn');
+    const info = document.getElementById('info');
+    const timeStamp = document.getElementById('timeStamp');
+    const qInput = document.getElementById('q');
+
+    // ホームへ戻る（必要ならパスを変えて）
+    homeBtn.addEventListener('click', ()=> {
+      // ビジュアルフィードバック
+      homeBtn.animate([{transform:'translateY(0)'},{transform:'translateY(-4px)'},{transform:'translateY(0)'}],{duration:160});
+      // デフォルトはトップに飛ばす
+      window.location.href = '/';
+    });
+
+    // 報告ボタン（実用的にはフォームやAPIに接続）
+    reportBtn.addEventListener('click', ()=> {
+      reportBtn.animate([{opacity:1},{opacity:0.6},{opacity:1}],{duration:220});
+      const stub = document.createElement('div');
+      stub.textContent = '> report queued — thank you.';
+      stub.style.fontFamily = 'monospace';
+      stub.style.marginTop = '10px';
+      info.appendChild(stub);
+    });
+
+    // サイト内検索処理（デフォルトはGoogle site:検索を新しいタブで開く）
+    function handleSearch(e){
+      e.preventDefault();
+      const q = qInput.value.trim();
+      if(!q){
+        qInput.focus();
+        return false;
+      }
+      const site = location.hostname || 'your-site.com'; // 必要ならドメインをハードコード
+      const url = `https://www.google.com/search?q=site:${site}+${encodeURIComponent(q)}`;
+      window.open(url, '_blank', 'noopener');
+      return false;
+    }
+
+    // タイムスタンプ表示（ユーザーのローカル時刻）
+    (function showTime(){
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,'0');
+      const day = String(d.getDate()).padStart(2,'0');
+      const hh = String(d.getHours()).padStart(2,'0');
+      const mm = String(d.getMinutes()).padStart(2,'0');
+      timeStamp.textContent = `${y}-${m}-${day} ${hh}:${mm}`;
+    })();
+
+    // キーボードで Enter が押されたらホームへ（アクセシビリティ）
+    window.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape'){
+        qInput.value = '';
+        qInput.focus();
+      }
+      if(e.key === 'Enter' && document.activeElement === qInput){
+        document.querySelector('#searchForm button[type="submit"]').click();
+      }
+    });
+
+    // 小さなUX: 404コードに微妙なランダムグリッチ
+    (function glitchLoop(){
+      const codeEl = document.getElementById('code');
+      setInterval(()=> {
+        const shiftX = (Math.random()*14 - 7).toFixed(1) + 'px';
+        const shiftY = (Math.random()*14 - 7).toFixed(1) + 'px';
+        codeEl.style.transform = `translate(${shiftX}, ${shiftY})`;
+        setTimeout(()=> codeEl.style.transform = '', 220);
+      }, 2200);
     })();
   </script>
 </body>
