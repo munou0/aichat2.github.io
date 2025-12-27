@@ -1,259 +1,387 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>無能のホームページ</title>
-    <meta name="description" content="無能のホームページ。サボるのが得意な無能太郎の自己紹介サイト。スキルやポートフォリオ（途中放置プロジェクト）をユーモアたっぷりに紹介。診断ボタンで遊べます。">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="ブラウザで動くWindows風コマンドプロンプトのデモページ。dir, cd, mkdir, typeなどの基本コマンドを体験可能。実際のシステムには影響ありません。">
 
-  <style>
-    :root{
-      --bg:#0f1724;
-      --card:#0b1220;
-      --accent:#ff6b6b;
-      --muted:#9aa4b2;
-      --glass: rgba(255,255,255,0.03);
-      --radius:12px;
-      --maxw:1000px;
-      font-family: "Helvetica Neue", Arial, sans-serif;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      background:
-        radial-gradient(1000px 600px at 10% 10%, rgba(255,107,107,0.06), transparent 10%),
-        radial-gradient(800px 500px at 90% 90%, rgba(45,125,255,0.04), transparent 10%),
-        var(--bg);
-      color:#e6eef6;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      line-height:1.5;
-      padding:40px 20px;
-      display:flex;
-      justify-content:center;
-      align-items:flex-start;
-      min-height:100vh;
-    }
-    .wrap{
-      width:100%;
-      max-width:var(--maxw);
-    }
-    header{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:16px;
-      margin-bottom:28px;
-    }
-    .brand{
-      display:flex;
-      gap:14px;
-      align-items:center;
-    }
-    .logo{
-      width:64px;height:64px;border-radius:14px;
-      background:linear-gradient(135deg,var(--accent),#ffd27a);
-      display:flex;align-items:center;justify-content:center;
-      font-weight:700;font-size:28px;color:#111;
-      box-shadow:0 6px 18px rgba(0,0,0,0.5);
-    }
-    h1{margin:0;font-size:22px}
-    p.lead{margin:0;color:var(--muted);font-size:14px}
-
-    nav a{
-      color:var(--muted);
-      text-decoration:none;
-      margin-left:12px;
-      font-size:14px;
-    }
-
-    main{
-      display:grid;
-      grid-template-columns: 1fr 360px;
-      gap:20px;
-      align-items:start;
-    }
-
-    /* left column */
-    .card{
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), var(--glass));
-      border-radius:var(--radius);
-      padding:20px;
-      box-shadow: 0 6px 20px rgba(2,6,23,0.6);
-      border: 1px solid rgba(255,255,255,0.03);
-    }
-    .hero{
-      display:flex;gap:16px;align-items:center;
-    }
-    .avatar{
-      width:88px;height:88px;border-radius:12px;
-      background:linear-gradient(180deg,#1e293b, #0b1220);
-      display:flex;align-items:center;justify-content:center;
-      font-size:44px;
-      box-shadow: inset 0 -6px 18px rgba(0,0,0,0.6);
-    }
-    .hero h2{margin:0;font-size:20px}
-    .hero p{margin:6px 0 0 0;color:var(--muted);font-size:14px}
-
-    .section{margin-top:18px}
-    .skills{display:flex;flex-direction:column;gap:10px}
-    .skill{
-      display:flex;justify-content:space-between;align-items:center;font-size:13px;
-    }
-    .bar{
-      height:10px;background:rgba(255,255,255,0.04);border-radius:8px;overflow:hidden;width:100%;margin-top:6px;
-    }
-    .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent), #ff9a9a);border-radius:8px}
-
-    .projects{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:8px}
-    .project{background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;font-size:14px;color:var(--muted)}
-
-    /* right column */
-    aside .card{position:sticky;top:40px;}
-    .test{
-      display:flex;gap:8px;align-items:center;margin-top:8px;
-    }
-    button{
-      background:linear-gradient(90deg,var(--accent), #ff9a9a);
-      border:none;padding:10px 12px;border-radius:10px;color:#111;font-weight:700;cursor:pointer;
-      box-shadow:0 6px 18px rgba(255,107,107,0.12);
-    }
-    .result{
-      margin-top:12px;padding:12px;border-radius:10px;background:rgba(255,255,255,0.02);color:var(--muted);
-    }
-
-    footer{margin-top:28px;color:var(--muted);font-size:13px;text-align:center}
-
-    /* smaller screens */
-    @media (max-width:900px){
-      main{grid-template-columns:1fr}
-      aside .card{position:static}
-    }
-  </style>
+<title>Windows風コマンドプロンプト（デモ）</title>
+<style>
+  :root{--bg:#0b0b0b;--text:#e6e6e6;--prompt:#7ecbff;}
+  html,body{height:100%;margin:0;background:var(--bg);font-family: "Consolas", "Courier New", Menlo, monospace;color:var(--text);}
+  .terminal{box-sizing:border-box;height:100%;padding:12px;display:flex;flex-direction:column;gap:6px;}
+  .screen{flex:1;overflow:auto;padding:8px;border-radius:6px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);}
+  .line{white-space:pre-wrap;word-break:break-word;font-size:14px;line-height:1.35;}
+  .prompt-line{display:flex;align-items:center;gap:8px;}
+  .prompt{color:var(--prompt);min-width:0;font-weight:600;}
+  input.cmd{
+    background:transparent;border:0;outline:0;color:var(--text);
+    font-family:inherit;font-size:14px;flex:1;padding:2px;
+  }
+  .muted{color:#9aa2a8;font-size:13px}
+  .cursor{
+    width:10px;height:18px;background:var(--text);display:inline-block;margin-left:2px;
+    animation:blink 1s steps(2,start) infinite;vertical-align:middle;
+  }
+  @keyframes blink{50%{opacity:0}}
+  .output .error{color:#ff6b6b}
+  .output .dir{color:#9bf7a1}
+  .small{font-size:12px}
+  .footer{color:#7b7b7b;font-size:12px;padding-top:6px}
+  /* make selection readable on dark bg */
+  ::selection{background:#355; color: #fff;}
+  a.help-link{color:var(--prompt);text-decoration:none}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="brand">
-        <div class="logo">無</div>
-        <div>
-          <h1>無能のホームページ</h1>
-          <p class="lead">ここは誇らしい無能のための公式(?)サイトです。</p>
-        </div>
-      </div>
-      <nav>
-        <a href="#about">自己紹介</a>
-        <a href="#skills">スキル</a>
-        <a href="#projects">ポートフォリオ</a>
-      </nav>
-    </header>
+<div class="terminal" role="application" aria-label="Windows風コマンドプロンプトデモ">
+  <div id="screen" class="screen" tabindex="0" aria-live="polite"></div>
 
-    <main>
-      <div>
-        <section class="card hero" id="about">
-          <div class="avatar" aria-hidden="true">😅</div>
-          <div>
-            <h2>無能 太郎</h2>
-            <p>いつも一生懸命サボることで生き延びてきたタイプ。成果は期待しないで。</p>
-            <div class="section">
-              <strong>ひとこと</strong>
-              <p style="margin:8px 0 0 0;color:var(--muted);">頑張るより休むのが得意。締切は友達ではない。</p>
-            </div>
-          </div>
-        </section>
+  <form id="cmdline" class="prompt-line" autocomplete="off" onsubmit="return false;">
+    <div id="prompt" class="prompt">C:\Users\Guest&gt;</div>
+    <input id="input" class="cmd" spellcheck="false" autocomplete="off" autofocus />
+    <div class="cursor" id="cursor"></div>
+  </form>
 
-        <section class="card section" id="skills">
-          <h3>スキルセット</h3>
-          <div class="skills">
-            <div>
-              <div class="skill"><span>遅刻率</span><span>98%</span></div>
-              <div class="bar"><i style="width:98%"></i></div>
-            </div>
-            <div>
-              <div class="skill"><span>メール未読</span><span>92%</span></div>
-              <div class="bar"><i style="width:92%"></i></div>
-            </div>
-            <div>
-              <div class="skill"><span>集中力</span><span>12%</span></div>
-              <div class="bar"><i style="width:12%"></i></div>
-            </div>
-          </div>
-        </section>
+  <div class="footer small">help と入力するとコマンド一覧。上/下で履歴、Tab で補完、cls で画面クリア。</div>
+</div>
 
-        <section class="card section" id="projects">
-          <h3>ポートフォリオ（概念的）</h3>
-          <div class="projects">
-            <div class="project">
-              <strong>プロジェクトA</strong>
-              <p style="margin:6px 0 0 0;color:var(--muted);font-size:13px">途中で放置したアイデア。発火しない。</p>
-            </div>
-            <div class="project">
-              <strong>プロジェクトB</strong>
-              <p style="margin:6px 0 0 0;color:var(--muted);font-size:13px">READMEが長すぎて誰も読まない。</p>
-            </div>
-            <div class="project">
-              <strong>プロジェクトC</strong>
-              <p style="margin:6px 0 0 0;color:var(--muted);font-size:13px">ビルドに成功したが動かない。</p>
-            </div>
-            <div class="project">
-              <strong>プロジェクトD</strong>
-              <p style="margin:6px 0 0 0;color:var(--muted);font-size:13px">デプロイ忘れ常習犯。</p>
-            </div>
-          </div>
-        </section>
-      </div>
+<script>
+(() => {
+  // --- 仮想ファイルシステム ---
+  const fs = {
+    "Users": {
+      "Guest": {
+        "readme.txt": "これはデモの readme ファイルです。\ntype readme.txt で中身が見られます。\n",
+        "notes.txt": "メモ: ブラウザ内の仮想FSです。"
+      }
+    },
+    "Program Files": {},
+    "Windows": {
+      "system.ini": "system settings..."
+    }
+  };
 
-      <aside>
-        <div class="card">
-          <h3>能力診断ツール</h3>
-          <p style="color:var(--muted);font-size:13px;margin:6px 0 10px 0">ボタンを押すだけで無能判定（冗談）</p>
-          <div class="test">
-            <button id="testBtn">診断する</button>
-            <button id="resetBtn" style="background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:8px 10px;">リセット</button>
-          </div>
-          <div id="result" class="result">まだ診断されていません。</div>
+  // --- 状態 ---
+  let currentPath = ["C:","Users","Guest"]; // 表示用
+  let history = [];
+  let histIndex = null;
+  let active = true;
 
-          <div class="section" style="margin-top:14px">
-            <h4>連絡先</h4>
-            <p style="color:var(--muted);font-size:13px;margin:6px 0 0 0">メール: <em>nobody@example.com</em></p>
-            <p style="color:var(--muted);font-size:13px;margin:6px 0 0 0">住所: どこかのソファ</p>
-          </div>
-        </div>
-      </aside>
-    </main>
+  const screen = document.getElementById('screen');
+  const input = document.getElementById('input');
+  const promptEl = document.getElementById('prompt');
 
-    <footer>
-      © <span id="year"></span> 無能のホームページ — 作成者: 無能太郎（仮名）
-    </footer>
-  </div>
+  // 初期プロンプト更新
+  function updatePrompt(){ promptEl.textContent = currentPath.join("\\") + '>'; }
+  updatePrompt();
 
-  <script>
-    // 初期化
-    document.getElementById('year').textContent = new Date().getFullYear();
+  // ヘルパー: パス解決（簡易）
+  function resolveParts(pathStr){
+    if(!pathStr) return [...currentPath];
+    // normalize slashes
+    pathStr = pathStr.replace(/\//g,"\\").trim();
+    if(/^C:\\/i.test(pathStr)){
+      // 絶対パス: C:\...
+      const p = pathStr.replace(/^C:\\/i,"").split("\\").filter(Boolean);
+      return ["C:", ...p];
+    } else {
+      const parts = pathStr.split("\\").filter(Boolean);
+      const result = [...currentPath];
+      for(const part of parts){
+        if(part === ".") continue;
+        if(part === ".."){ if(result.length>1) result.pop(); continue; }
+        result.push(part);
+      }
+      return result;
+    }
+  }
 
-    const messages = [
-      "診断結果: 驚くほど無能。休憩を推奨。",
-      "診断結果: 能力保留。コーヒーを飲んでから再試行。",
-      "診断結果: 遅刻の達人。時計が敵。",
-      "診断結果: 天才かもしれない。単にやる気が隠れているだけ。",
-      "診断結果: コードは動かないが気持ちは穏やか。"
-    ];
+  function getNode(parts, create=false){
+    // parts: ["C:", "Users", "Guest", ...]
+    // returns {node: <object|string>, parent: <object or null>, name: <string>}
+    if(!parts || parts.length===0) return {node: fs, parent: null, name: null};
+    if(parts[0].toUpperCase() !== "C:") return {node:null};
+    let node = fs;
+    let parent = null;
+    let name = null;
+    for(let i=1;i<parts.length;i++){
+      name = parts[i];
+      parent = node;
+      if(typeof node !== "object" || node === null) return {node:null};
+      if(!(name in node)){
+        if(create){
+          node[name] = {};
+        } else {
+          return {node:null};
+        }
+      }
+      node = node[name];
+    }
+    return {node, parent, name};
+  }
 
-    const btn = document.getElementById('testBtn');
-    const reset = document.getElementById('resetBtn');
-    const out = document.getElementById('result');
+  // 出力ユーティリティ
+  function print(text='', className='line'){
+    const el = document.createElement('div');
+    el.className = className;
+    el.textContent = text;
+    screen.appendChild(el);
+    screen.scrollTop = screen.scrollHeight;
+  }
+  function printHTML(node){
+    screen.appendChild(node);
+    screen.scrollTop = screen.scrollHeight;
+  }
 
-    btn.addEventListener('click', () => {
-      // ランダムに結果を出す（演出）
-      const i = Math.floor(Math.random()*messages.length);
-      out.textContent = messages[i];
-      out.style.color = '#ffd27a';
-    });
+  // コマンド実装
+  const commands = {
+    help(args){
+      print("利用可能なコマンド:");
+      print(" help        - このヘルプを表示");
+      print(" cls         - 画面をクリア");
+      print(" dir         - 現在ディレクトリの一覧表示");
+      print(" cd [path]   - ディレクトリ移動");
+      print(" mkdir name  - ディレクトリ作成");
+      print(" rmdir name  - ディレクトリ削除（空であること）");
+      print(" type file   - ファイル内容を表示");
+      print(" del file    - ファイルを削除");
+      print(" ren old new - ファイル/フォルダ名を変更");
+      print(" echo text   - テキストを表示");
+      print(" date/time   - 現在日時を表示");
+      print(" ping host [-n count] - 偽の ping を実行（デモ）");
+      print(" exit        - 入力を無効化（エミュレート終了）");
+    },
+    cls(){
+      screen.innerHTML = '';
+    },
+    dir(){
+      const node = getNode(currentPath).node;
+      if(!node){ print("指定されたパスが見つかりません。", 'output error'); return; }
+      const names = Object.keys(node);
+      print(` ${currentPath.join("\\")}`);
+      print("");
+      if(names.length===0){ print("  <空のディレクトリ>"); return; }
+      names.forEach(name=>{
+        const val = node[name];
+        if(typeof val === "object") print(`  <DIR>\t${name}`);
+        else print(`       \t${name}\t${(String(val)).length} bytes`);
+      });
+    },
+    cd(args){
+      const arg = args.trim();
+      if(!arg){ // cd だけ -> ルートに戻す? Windows は cd だけで現在表示。ここではルートへはしない
+        print(currentPath.join("\\"));
+        return;
+      }
+      const parts = resolveParts(arg);
+      const res = getNode(parts);
+      if(!res.node){ print("指定されたパスが見つかりません。", 'output error'); return; }
+      if(typeof res.node !== "object"){ print("そのパスはディレクトリではありません。", 'output error'); return; }
+      currentPath = parts;
+      updatePrompt();
+    },
+    mkdir(args){
+      const name = args.trim();
+      if(!name){ print("ファイル名またはディレクトリ名を指定してください。", 'output error'); return; }
+      const parts = [...currentPath, name];
+      const exists = getNode(parts).node;
+      if(exists){ print("すでに存在します。", 'output error'); return; }
+      getNode(parts, true);
+      print(`${name} を作成しました。`);
+    },
+    rmdir(args){
+      const name = args.trim();
+      if(!name){ print("名前を指定してください。", 'output error'); return; }
+      const parts = [...currentPath, name];
+      const t = getNode(parts);
+      if(!t.node){ print("そのディレクトリは存在しません。", 'output error'); return; }
+      if(typeof t.node !== "object"){ print("ディレクトリではありません。", 'output error'); return; }
+      if(Object.keys(t.node).length>0){ print("ディレクトリが空ではありません。", 'output error'); return; }
+      delete t.parent[name];
+      print(`${name} を削除しました。`);
+    },
+    type(args){
+      const name = args.trim();
+      if(!name){ print("表示するファイル名を指定してください。", 'output error'); return; }
+      const parts = resolveParts(name);
+      const t = getNode(parts);
+      if(!t.node){ print("ファイルが見つかりません。", 'output error'); return; }
+      if(typeof t.node === "object"){ print("その対象はファイルではありません。", 'output error'); return; }
+      print(t.node);
+    },
+    del(args){
+      const name = args.trim();
+      if(!name){ print("削除するファイル名を指定してください。", 'output error'); return; }
+      const parts = resolveParts(name);
+      const t = getNode(parts);
+      if(!t.node){ print("ファイルが見つかりません。", 'output error'); return; }
+      if(typeof t.node === "object"){ print("その対象はディレクトリです。del では削除できません。", 'output error'); return; }
+      delete t.parent[t.name];
+      print(`${t.name} を削除しました。`);
+    },
+    ren(args){
+      const parts = args.split(/\s+/);
+      if(parts.length<2){ print("使い方: ren 古い名前 新しい名前", 'output error'); return; }
+      const oldp = resolveParts(parts[0]);
+      const newName = parts.slice(1).join(" ");
+      const t = getNode(oldp);
+      if(!t.node){ print("元のファイル/ディレクトリが見つかりません。", 'output error'); return; }
+      if(t.name in t.parent){ t.parent[newName] = t.node; delete t.parent[t.name]; print("名前を変更しました。"); }
+      else print("名前を変更できませんでした。", 'output error');
+    },
+    echo(args){
+      print(args);
+    },
+    date(){
+      print(new Date().toLocaleDateString());
+    },
+    time(){
+      print(new Date().toLocaleTimeString());
+    },
+    "date/time"(){
+      print(new Date().toLocaleString());
+    },
+    ping(args){
+      // 簡易シミュレーション: ping 127.0.0.1 -n 4
+      const parts = args.split(/\s+/).filter(Boolean);
+      const host = parts[0] || '127.0.0.1';
+      let count = 4;
+      const nIdx = parts.indexOf('-n');
+      if(nIdx !== -1 && parts[nIdx+1]) count = Math.max(1, parseInt(parts[nIdx+1])||4);
+      print(`Pinging ${host} with 32 bytes of data:`);
+      let i=0;
+      const id = setInterval(()=>{
+        i++;
+        print(`Reply from ${host}: bytes=32 time=${Math.floor(Math.random()*50)}ms TTL=128`);
+        if(i>=count){ clearInterval(id); print(`\nPing statistics for ${host}: Packets: Sent = ${count}, Received = ${count}, Lost = 0 (0% loss)`); }
+      }, 300);
+    },
+    exit(){
+      print("終了します (エミュレート)。入力は無効化されます。");
+      input.disabled = true;
+      active = false;
+      promptEl.textContent = '';
+    }
+  };
 
-    reset.addEventListener('click', () => {
-      out.textContent = "まだ診断されていません。";
-      out.style.color = "";
-    });
-  </script>
+  // コマンド実行
+  function runCommand(raw){
+    if(!raw.trim()) return;
+    print(currentPath.join("\\") + '>' + raw, 'line'); // エコー風に表示（プロンプト上の入力は残っているが見やすくする）
+    history.push(raw);
+    histIndex = null;
+
+    const [cmd, ...rest] = raw.split(/\s+/);
+    const args = raw.slice(cmd.length).trim();
+    const key = cmd.toLowerCase();
+
+    if(commands[key]){
+      try{
+        commands[key](args);
+      }catch(e){
+        print("コマンドの実行中にエラーが発生しました。", 'output error');
+        console.error(e);
+      }
+    } else {
+      print(`'${cmd}' は内部コマンドまたは外部コマンド、操作可能なプログラムまたはバッチ ファイルとして認識されていません。`, 'output error');
+    }
+  }
+
+  // 履歴ナビ / 補完
+  input.addEventListener('keydown', (e) => {
+    if(!active) return;
+    if(e.key === 'Enter'){
+      const val = input.value;
+      runCommand(val);
+      input.value = '';
+      e.preventDefault();
+      return;
+    }
+    if(e.key === 'ArrowUp'){
+      if(history.length===0) return;
+      if(histIndex === null) histIndex = history.length - 1;
+      else histIndex = Math.max(0, histIndex - 1);
+      input.value = history[histIndex];
+      e.preventDefault();
+      return;
+    }
+    if(e.key === 'ArrowDown'){
+      if(history.length===0) return;
+      if(histIndex === null){ input.value = ''; return; }
+      histIndex = Math.min(history.length - 1, histIndex + 1);
+      if(histIndex === history.length - 1) { input.value = history[histIndex]; }
+      else input.value = history[histIndex] || '';
+      e.preventDefault();
+      return;
+    }
+    if(e.key === 'Tab'){
+      e.preventDefault();
+      const v = input.value;
+      const parts = v.split(/\s+/);
+      const last = parts.pop() || '';
+      // 補完候補を探す（カレントディレクトリとコマンド）
+      const candidatesCmd = Object.keys(commands).filter(c=>c.startsWith(last.toLowerCase()));
+      const node = getNode(currentPath).node || {};
+      const candidatesFs = Object.keys(node).filter(n=>n.startsWith(last));
+      const all = [...new Set([...candidatesCmd, ...candidatesFs])];
+      if(all.length===0) return;
+      if(all.length===1){
+        parts.push(all[0]);
+        input.value = parts.join(' ') + (v.endsWith(' ') ? ' ' : '');
+      } else {
+        // 共通接頭辞を見つける
+        let prefix = all[0];
+        for(let i=1;i<all.length;i++){
+          let s = '';
+          for(let j=0;j<Math.min(prefix.length, all[i].length);j++){
+            if(prefix[j]===all[i][j]) s+=prefix[j]; else break;
+          }
+          prefix = s;
+        }
+        if(prefix.length>last.length){
+          parts.push(prefix);
+          input.value = parts.join(' ');
+        } else {
+          print(all.join('    '));
+        }
+      }
+    }
+    // Ctrl+L でクリア（ブラウザでのショートカットを上書き）
+    if(e.ctrlKey && (e.key === 'l' || e.key === 'L')){ e.preventDefault(); commands.cls(); }
+  });
+
+  // クリックでフォーカス
+  screen.addEventListener('click', ()=> input.focus());
+  promptEl.addEventListener('click', ()=> input.focus());
+
+  // 初期メッセージ
+  print("Microsoft Windows [Version 10.0.0-demo]");
+  print("© Browser Corporation. All rights reserved.");
+  print("");
+  print("このシェルはデモです。実際のシステムに影響はありません。\n");
+  print("help を入力するとコマンド一覧が表示されます。\n");
+
+  // 小技: ダブルエンターで前回コマンドを再実行（オプション）
+  let lastEnterTime = 0;
+  input.addEventListener('keyup', e=>{
+    if(e.key==='Enter'){
+      const now = Date.now();
+      if(now - lastEnterTime < 400){
+        // 直前のコマンドを再実行（履歴末尾）
+        if(history.length>0) runCommand(history[history.length-1]);
+      }
+      lastEnterTime = now;
+    }
+  });
+
+  // スタイル: フォーカスがあるとカーソルを表示、それ以外は隠す
+  function blinkCursor(){
+    const c = document.getElementById('cursor');
+    if(document.activeElement === input) { c.style.opacity = '1'; } else { c.style.opacity = '0.4'; }
+  }
+  setInterval(blinkCursor, 500);
+})();
+</script>
 </body>
 </html>
